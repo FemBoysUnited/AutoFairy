@@ -360,33 +360,50 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- Highlight loop
+
 RunService.Heartbeat:Connect(function()
     if not isHighlighting then return end
+
     local rewards = getIngameRewards()
+
+
+    local highestPriority = math.huge
+
     for _, frame in ipairs(rewards) do
-        local name = frame:FindFirstChild("Title") and frame.Title.Text
-        local matched
+        -- frame itself is the ImageButton
+        local titleLabel = frame:FindFirstChild("Title")
+        local name = titleLabel and titleLabel.Text or nil
+        local matchedPriority
+
+        -- Check if this reward matches a selected priority
         for i = 1,4 do
             if selectedPriorities[i] == name then
-                matched = i
+                matchedPriority = i
                 break
             end
         end
 
+        -- Highlight the reward
         local stroke = frame:FindFirstChild("FairyUIStroke")
-        if matched and not stroke then
+        if matchedPriority and not stroke then
             stroke = Instance.new("UIStroke")
             stroke.Name = "FairyUIStroke"
             stroke.Parent = frame
             stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            stroke.Color = prioritySettings[matched].Color
-            stroke.Thickness = prioritySettings[matched].Thickness
-        elseif not matched and stroke then
+            stroke.Color = prioritySettings[matchedPriority].Color
+            stroke.Thickness = prioritySettings[matchedPriority].Thickness
+        elseif not matchedPriority and stroke then
             stroke:Destroy()
-        end
-    end
+         end
+     end
 end)
+
+
+
+
+
+
+
 
 -- Currency tracker updater
 task.spawn(function()
