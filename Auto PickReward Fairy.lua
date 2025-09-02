@@ -305,7 +305,21 @@ local toggleBtn = make{
     TextScaled=true
 }
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0,6)
+-- ===== SCALE THE BUTTON AND TEXT =====
+local scaleFactor = 1.5 / 2 -- from 2x → 1.5x
 
+-- Scale button size
+local oldSize = toggleBtn.Size
+toggleBtn.Size = UDim2.new(
+    oldSize.X.Scale * scaleFactor, oldSize.X.Offset * scaleFactor,
+    oldSize.Y.Scale * scaleFactor, oldSize.Y.Offset * scaleFactor
+)
+
+-- Recenter horizontally
+toggleBtn.Position = UDim2.new(
+    0.5, -toggleBtn.Size.X.Offset/2,
+    toggleBtn.Position.Y.Scale, toggleBtn.Position.Y.Offset
+)
 local isHighlighting = false
 toggleBtn.MouseButton1Click:Connect(function()
     isHighlighting = not isHighlighting
